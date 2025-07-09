@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nanduri Sree Divya - Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React and ReactDOM CDNs -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX transformation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap');
+        body { font-family: 'Lato', sans-serif; }
+        .font-playfair { font-family: 'Playfair Display', serif; }
+
+        @keyframes fadeInElegant {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .animate-fadeInElegant {
+          animation: fadeInElegant 1.5s ease-out forwards;
+        }
+
+        @keyframes slideInUpSophisticated {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slideInUpSophisticated {
+          animation: slideInUpSophisticated 1.2s ease-out forwards;
+          opacity: 0;
+        }
+
+        .hover-lift:hover {
+          transform: translateY(-12px) var(--tw-rotate, 0deg);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .project-image {
+          filter: grayscale(0%);
+          transition: filter 0.5s ease-out;
+        }
+        .group:hover .project-image {
+          filter: grayscale(80%);
+        }
+
+        .btn-refined:hover {
+          background-color: #57534e;
+          color: #f5f5f4;
+          border-color: #57534e;
+        }
+
+        .nav-underline:hover:after {
+          width: 100%;
+        }
+        .nav-underline:after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 1px;
+          display: block;
+          margin-top: 5px;
+          right: 0;
+          background: #292524;
+          transition: width .3s ease-out;
+        }
+        .nav-underline:hover:after {
+          left: 0;
+          background: #292524;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+
+        .polaroid-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.08);
+            transition: all 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
+            padding: 15px;
+            padding-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .polaroid-card:hover {
+            transform: translateY(-15px) var(--tw-rotate, 0deg);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .polaroid-image-wrapper {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .polaroid-image-wrapper img, .polaroid-image-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.7s ease-out;
+        }
+        .polaroid-text-content {
+            text-align: center;
+            padding: 0 5px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        .polaroid-text-content h3 {
+            margin-bottom: 5px;
+            font-size: 1.6rem;
+            line-height: 1.2;
+        }
+        .polaroid-text-content p {
+            font-size: 0.9rem;
+            color: #57534e;
+            line-height: 1.4;
+            margin-bottom: 0;
+            flex-grow: 1;
+        }
+        .rotate-small-1 { transform: rotate(1deg); }
+        .rotate-small-neg-1 { transform: rotate(-1deg); }
+        .rotate-small-2 { transform: rotate(2deg); }
+        .rotate-small-neg-2 { transform: rotate(-2deg); }
+
+        .timeline-container {
+          position: relative;
+        }
+        .timeline-line {
+          position: absolute;
+          left: 0.75rem;
+          width: 3px;
+          background-color: #d6d3d1;
+          z-index: 0;
+        }
+        .timeline-item {
+          cursor: pointer;
+          transition: all 0.3s ease-in-out;
+          position: relative;
+          padding-left: 2rem;
+          padding-top: 0.5rem;
+          padding-bottom: 0.5rem;
+          z-index: 1;
+        }
+
+        .timeline-dot {
+          content: '';
+          position: absolute;
+          left: 0.25rem;
+          top: 0.75rem;
+          width: 1.25rem;
+          height: 1.25rem;
+          border-radius: 50%;
+          border: 3px solid #f5f5f4;
+          transition: all 0.3s ease-in-out;
+          box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+          z-index: 2;
+        }
+        .timeline-item.active .timeline-dot {
+          transform: scale(1.2);
+          box-shadow: 0 0 0 4px rgba(0,0,0,0.2);
+        }
+        .timeline-item.active h3, .timeline-item.active p {
+          color: #292524;
+        }
+        .timeline-details {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.7s ease-in-out, opacity 0.7s ease-in-out;
+          opacity: 0;
+          padding: 0 1rem;
+        }
+        .timeline-details.open {
+          max-height: 500px;
+          opacity: 1;
+          padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Inline SVG for Mail icon (replaces Lucide Mail)
+        const MailIcon = ({ className, strokeWidth }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth || "2"} strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <rect width="20" height="16" x="2" y="4" rx="2" ry="2"></rect>
+                <path d="m22 7-8.97 5.71C10.5 13.5 8 12 2 7"></path>
+            </svg>
+        );
+
+        // Inline SVG for Linkedin icon (replaces Lucide Linkedin)
+        const LinkedinIcon = ({ className, strokeWidth }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth || "2"} strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                <rect width="4" height="12" x="2" y="9"></rect>
+                <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+        );
+
+        // Inline SVG for ArrowRight icon (replaces Lucide ArrowRight)
+        const ArrowRightIcon = ({ className, strokeWidth }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth || "2"} strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+            </svg>
+        );
+
+        // Inline SVG for Download icon (replaces Lucide Download)
+        const DownloadIcon = ({ className, strokeWidth }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth || "2"} strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" x2="12" y1="15" y2="3"></line>
+            </svg>
+        );
+
+        // Inline SVG for Copy icon (replaces Lucide Copy)
+        const CopyIcon = ({ className, strokeWidth }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth || "2"} strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v2"></path>
+            </svg>
+        );
+
+
+        const App = () => {
+          const [activeJobIndex, setActiveJobIndex] = useState(0);
+          const [isSkillsScrollingPaused, setIsSkillsScrollingPaused] = useState(false);
+          const [showEmailInContact, setShowEmailInContact] = useState(false);
+          const [copyMessage, setCopyMessage] = useState('');
+          const [formStatus, setFormStatus] = useState(''); // New state for form submission status
+
+          const skillsContainerRef = useRef(null);
+          const experienceTimelineContainerRef = useRef(null);
+          const experienceTimelineLineRef = useRef(null);
+
+          const getYouTubeVideoId = (url) => {
+            if (!url) return '';
+            const match = url.match(/(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|)([a-zA-Z0-9_-]{11})(:\S+)?/);
+            return match ? match[1] : '';
+          };
+
+          const portfolioContent = {
+            name: "Nanduri Sree Divya",
+            about: "Nanduri Sree Divya is a distinguished artisan in UI/UX design and front-end development, meticulously shaping digital narratives with unparalleled sophistication. Her commitment extends beyond functionality to the seamless integration of aesthetic excellence, transforming complex blueprints into intuitive and visually compelling experiences that resonate with discerning audiences.",
+            contact: {
+              email: "dnanduri1910@gmail.com",
+              linkedin: "https://www.linkedin.com/in/nanduridivya",
+            },
+            skills: [
+              { name: "Figma", logoUrl: "https://www.vectorlogo.zone/logos/figma/figma-icon.svg" },
+              { name: "Adobe Photoshop", logoUrl: "https://www.vectorlogo.zone/logos/adobe_photoshop/adobe_photoshop-icon.svg" },
+              { name: "React.js", logoUrl: "https://www.vectorlogo.zone/logos/reactjs/reactjs-icon.svg" },
+              { name: "HTML & CSS", logoUrl: "https://www.vectorlogo.zone/logos/w3_html5/w3_html5-icon.svg" },
+              { name: "Python", logoUrl: "https://www.vectorlogo.zone/logos/python/python-icon.svg" },
+              { name: "MongoDB", logoUrl: "https://www.vectorlogo.zone/logos/mongodb/mongodb-icon.svg" },
+              { name: "UI/UX Design", logoUrl: "https://www.svgrepo.com/show/503023/ui-ux-design.svg" },
+              { name: "Front-end Development", logoUrl: "https://www.svgrepo.com/show/305786/frontend.svg" },
+              { name: "UX Research", logoUrl: "https://www.svgrepo.com/show/400619/ux-research-tools.svg" },
+              { name: "Prototyping", logoUrl: "https://www.svgrepo.com/show/437943/prototype.svg" },
+              { name: "Fusion 360", logoUrl: "https://placehold.co/48x48/f5f5f4/292524?text=F360" },
+              { name: "Canva", logoUrl: "https://www.vectorlogo.zone/logos/canva/canva-icon.svg" },
+              { name: "AutoCAD", logoUrl: "https://www.vectorlogo.zone/logos/autodesk_autocad/autodesk_autocad-icon.svg" },
+              { name: "C", logoUrl: "https://www.svgrepo.com/show/363435/c.svg" },
+              { name: "C++", logoUrl: "https://www.vectorlogo.zone/logos/isocpp/isocpp-icon.svg" },
+              { name: "Shopify Development", logoUrl: "https://www.vectorlogo.zone/logos/shopify/shopify-icon.svg" },
+              { name: "WordPress", logoUrl: "https://www.vectorlogo.zone/logos/wordpress/wordpress-icon.svg" },
+              { name: "Supabase", logoUrl: "https://www.vectorlogo.zone/logos/supabase/supabase-icon.svg" },
+              { name: "MySQL", logoUrl: "https://www.vectorlogo.zone/logos/mysql/mysql-icon.svg" },
+              { name: "Jupyter Notebook", logoUrl: "https://www.vectorlogo.zone/logos/jupyter/jupyter-icon.svg" },
+              { name: "Git", logoUrl: "https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" },
+              { name: "Bootstrap", logoUrl: "https://www.vectorlogo.zone/logos/getbootstrap/getbootstrap-icon.svg" },
+              { name: "React Native", logoUrl: "https://www.vectorlogo.zone/logos/reactjs/reactjs-icon.svg" },
+              { name: "Flask", logoUrl: "https://www.vectorlogo.zone/logos/pocoo_flask/pocoo_flask-icon.svg" },
+            ],
+            experience: [
+              {
+                title: "Design Intern",
+                company: "Unacademy",
+                duration: "July 2024-October 2024",
+                location: "Bengaluru, India",
+                description: [
+                  "Curated and executed high-fidelity wireframes and bespoke user illustrations for the Airlearn language-learning platform, significantly enhancing user journey aesthetics and intuitiveness.",
+                  "Fostered cross-functional synergy with developers, UX researchers, and educational specialists to deliver over 199 engaging lessons and expand vocabulary acquisition, optimizing content through extensive design and development cycles."
+                ],
+                dotColor: "#4B5563"
+              },
+              {
+                title: "Graphic Design Intern",
+                company: "Stress Away",
+                duration: "July 2024-October 2024",
+                location: "Chennai, India",
+                description: [
+                  "Conceptualized and produced more than 35 distinct static creatives, including refined social media assets, impactful banners, and elegant email visuals, contributing to high-visibility daily campaigns during Mental Health Awareness Week.",
+                  "Commended for exceptional creativity, brand consistency, and proactive initiative, culminating in an enhanced visual strategy and a distinguished recommendation from the Head of Design."
+                ],
+                dotColor: "#9CA3AF"
+              },
+              {
+                title: "Summer Intern",
+                company: "HCL Technologies",
+                duration: "May 2023-August 2023",
+                location: "Chennai, India",
+                description: [
+                  "Engineered a sophisticated parking management system featuring dynamic slot allocation and precise billing mechanisms, leveraging MongoDB for robust and efficient data orchestration.",
+                  "Architected and deployed a highly responsive, mobile-optimized front-end interface utilizing React.js, HTML, and CSS, ensuring unparalleled cross-browser compatibility and user accessibility."
+                ],
+                dotColor: "#D1D5DB"
+              }
+            ],
+            projects: [
+              {
+                title: "E-Challan Mobile Application Wireframe",
+                description: "Mobile app wireframes for digital traffic challans. Frontend in React Native, backend in Flask.\n**Achieved highest distinction (S grade).**",
+                image: "https://placehold.co/600x400/292524/f5f5f4?text=E-Challan%20Demo",
+                externalVideoLink: "https://youtu.be/DtXyhi2qEj8",
+              },
+              {
+                title: "Counter App (React Native)",
+                description: "A simple yet elegant counter mobile application developed with React Native and Expo Go. Demonstrates fundamental state management and UI responsiveness for cross-platform mobile development.",
+                image: 'https://placehold.co/600x400/292524/f5f5f4?text=Counter%20App%20Icon', // Placeholder for uploaded:icon.png
+                apkDownloadLink: "https://expo.dev/artifacts/eas/rsHDztRMDXwhCWe3gRNTzQ.apk"
+              },
+              {
+                title: "Graphic Design Portfolio",
+                description: "A curated collection of graphic design works, showcasing a range of creative projects.",
+                image: "https://placehold.co/600x400/292524/f5f5f4?text=Graphic%20Design%20Portfolio",
+                externalLink: "https://www.behance.net/gallery/201918851/Portfolio-Graphic-Design",
+              },
+              {
+                title: "Restaurant CRM Dashboard",
+                description: "A comprehensive CRM dashboard for restaurants, designed to manage customer relationships, reservations, and feedback efficiently.\n**Click to view the PDF dashboard design.**",
+                image: "https://placehold.co/600x400/292524/f5f5f4?text=Restaurant%20CRM%20Dashboard",
+                externalLink: "https://drive.google.com/file/d/1fGGGaOskx7q7ai_7UI6spO1TVqmh8gNs/view?usp=drive_link",
+              },
+            ],
+          };
+
+          const orderedProjects = portfolioContent.projects;
+
+          useEffect(() => {
+            const skillsContainer = skillsContainerRef.current;
+            let intervalId;
+            let scrollAmount = 0;
+            const scrollSpeed = 0.5;
+            const intervalTime = 20;
+
+            const startScrolling = () => {
+              if (skillsContainer && !isSkillsScrollingPaused) {
+                intervalId = setInterval(() => {
+                  if (skillsContainer.scrollWidth > skillsContainer.clientWidth) {
+                    if (skillsContainer.scrollLeft + skillsContainer.clientWidth >= skillsContainer.scrollWidth) {
+                      skillsContainer.scrollLeft = 0;
+                      scrollAmount = 0;
+                    } else {
+                      scrollAmount += scrollSpeed;
+                      skillsContainer.scrollLeft = scrollAmount;
+                    }
+                  }
+                }, intervalTime);
+              }
+            };
+
+            const stopScrolling = () => {
+              clearInterval(intervalId);
+            };
+
+            if (skillsContainer) {
+              if (!isSkillsScrollingPaused) {
+                startScrolling();
+              }
+
+              const handleMouseEnter = () => {
+                setIsSkillsScrollingPaused(true);
+                stopScrolling();
+              };
+
+              const handleMouseLeave = () => {
+                setIsSkillsScrollingPaused(false);
+                scrollAmount = skillsContainer.scrollLeft;
+                startScrolling();
+              };
+
+              const handleTouchStart = () => {
+                setIsSkillsScrollingPaused(true);
+                stopScrolling();
+              };
+
+              const handleTouchEnd = () => {
+                setIsSkillsScrollingPaused(false);
+                scrollAmount = skillsContainer.scrollLeft;
+                startScrolling();
+              };
+
+              skillsContainer.addEventListener('mouseenter', handleMouseEnter);
+              skillsContainer.addEventListener('mouseleave', handleMouseLeave);
+              skillsContainer.addEventListener('touchstart', handleTouchStart);
+              skillsContainer.addEventListener('touchend', handleTouchEnd);
+
+              return () => {
+                stopScrolling();
+                skillsContainer.removeEventListener('mouseenter', handleMouseEnter);
+                skillsContainer.removeEventListener('mouseleave', handleMouseLeave);
+                skillsContainer.removeEventListener('touchstart', handleTouchStart);
+                skillsContainer.removeEventListener('touchend', handleTouchEnd);
+              };
+            }
+          }, [isSkillsScrollingPaused]);
+
+
+          useEffect(() => {
+            const updateTimelineLineHeight = (containerRef, lineRef, activeIndex) => {
+              const container = containerRef.current;
+              const line = lineRef.current;
+              if (container && line) {
+                const items = Array.from(container.querySelectorAll('.timeline-item'));
+                if (items.length > 0) {
+                  const firstItem = items[0];
+                  const lastItem = items[items.length - 1];
+
+                  const firstDotTop = firstItem.offsetTop + (firstItem.querySelector('.timeline-dot')?.offsetTop || 0) + (firstItem.querySelector('.timeline-dot')?.offsetHeight / 2 || 0);
+                  const lastDotBottom = lastItem.offsetTop + (lastItem.querySelector('.timeline-dot')?.offsetTop || 0) + (lastItem.querySelector('.timeline-dot')?.offsetHeight / 2 || 0);
+
+                  line.style.top = `${firstDotTop}px`;
+                  line.style.height = `${lastDotBottom - firstDotTop}px`;
+                }
+              }
+            };
+
+            const timeoutIdExperience = setTimeout(() => updateTimelineLineHeight(experienceTimelineContainerRef, experienceTimelineLineRef, activeJobIndex), 100);
+
+            window.addEventListener('resize', () => {
+              updateTimelineLineHeight(experienceTimelineContainerRef, experienceTimelineLineRef, activeJobIndex);
+            });
+
+            return () => {
+              window.removeEventListener('resize', () => {
+                updateTimelineLineHeight(experienceTimelineContainerRef, experienceTimelineLineRef, activeJobIndex);
+              });
+              clearTimeout(timeoutIdExperience);
+            };
+          }, [activeJobIndex]);
+
+          const handleSmoothScroll = (e, targetId) => {
+            e.preventDefault();
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+              targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+          };
+
+          const copyEmailToClipboard = () => {
+            const email = portfolioContent.contact.email;
+            try {
+              const el = document.createElement('textarea');
+              el.value = email;
+              document.body.appendChild(el);
+              el.select();
+              document.execCommand('copy');
+              document.body.removeChild(el);
+              setCopyMessage('Email copied!');
+              setTimeout(() => setCopyMessage(''), 3000);
+            } catch (err) {
+              setCopyMessage('Failed to copy email.');
+              console.error('Could not copy text: ', err);
+            }
+          };
+
+          const handleSubmit = async (event) => {
+            event.preventDefault(); // Prevent default form submission
+            setFormStatus('Sending...');
+
+            const form = event.target;
+            const data = new FormData(form);
+            // Formspree endpoint using the provided ID
+            const formspreeEndpoint = "https://formspree.io/f/meokbwaw"; 
+
+            try {
+                const response = await fetch(formspreeEndpoint, { 
+                    method: 'POST',
+                    body: data,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    setFormStatus('Message sent successfully!');
+                    form.reset(); // Clear the form
+                } else {
+                    const result = await response.json();
+                    if (result.errors) {
+                        setFormStatus(result.errors.map(error => error.message).join(', '));
+                    } else {
+                        setFormStatus('Failed to send message.');
+                    }
+                }
+            } catch (error) {
+                setFormStatus('An error occurred. Please try again.');
+                console.error('Form submission error:', error);
+            } finally {
+                setTimeout(() => setFormStatus(''), 5000); // Clear status message after 5 seconds
+            }
+          };
+
+
+          return (
+            <div className="min-h-screen bg-stone-50 text-stone-800 font-inter antialiased overflow-x-hidden relative">
+              {/* Header (Floating Navigation Bar) */}
+              <header className="fixed top-0 left-0 w-full z-50 py-6 px-8 bg-white/80 backdrop-blur-md shadow-md">
+                <div className="flex justify-between items-center mx-auto max-w-7xl">
+                  <div className="flex items-center">
+                    <a href="#hero" onClick={(e) => handleSmoothScroll(e, 'hero')} className="text-stone-900 text-2xl font-playfair font-bold hover:text-stone-700 transition-colors duration-300">
+                      Portfolio
+                    </a>
+                  </div>
+                  <nav className="hidden md:flex space-x-12 text-lg font-medium">
+                    <a href="#skills" onClick={(e) => handleSmoothScroll(e, 'skills')} className="text-stone-700 hover:text-stone-900 transition-colors duration-300 relative nav-underline">Skills</a>
+                    <a href="#experience" onClick={(e) => handleSmoothScroll(e, 'experience')} className="text-stone-700 hover:text-stone-900 transition-colors duration-300 relative nav-underline">Experience</a>
+                    <a href="#projects" onClick={(e) => handleSmoothScroll(e, 'projects')} className="text-stone-700 hover:text-stone-900 transition-colors duration-300 relative nav-underline">Projects</a>
+                    <a href="#contact" onClick={(e) => handleSmoothScroll(e, 'contact')} className="text-stone-700 hover:text-stone-900 transition-colors duration-300 relative nav-underline">Contact</a>
+                  </nav>
+                  <div className="md:hidden">
+                    {/* Mobile menu icon can be added here */}
+                  </div>
+                </div>
+              </header>
+
+              {/* Hero Section */}
+              <section id="hero" className="relative flex flex-col items-center justify-center text-center py-40 px-4 md:px-16 lg:px-32 min-h-screen bg-stone-50 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-radial from-stone-100/50 to-stone-50/0 z-0"></div>
+
+                <h1 className="relative z-10 text-5xl md:text-7xl font-playfair leading-tight text-stone-900 mb-6 mt-12 tracking-wide animate-slideInUpSophisticated" style={{ animationDelay: '0.4s' }}>
+                  Hi, I'm {portfolioContent.name}
+                </h1>
+                <p className="relative z-10 text-xl md:text-2xl text-stone-700 max-w-5xl mb-10 font-light tracking-wide leading-relaxed animate-slideInUpSophisticated" style={{ animationDelay: '0.6s' }}>
+                  Welcome!
+                </p>
+                
+                <div className="relative z-10 w-24 h-px bg-stone-300 mb-12 animate-slideInUpSophisticated" style={{ animationDelay: '0.7s'}}></div>
+
+                {/* Removed Email Reveal from Hero Section */}
+              </section>
+
+              {/* Skills Section */}
+              <section id="skills" className="py-32 px-4 md:px-16 lg:px-32 bg-stone-50">
+                <h2 className="text-6xl font-playfair text-center text-stone-900 mb-20 flex items-center justify-center">
+                  The Tools of Creation
+                </h2>
+                <div 
+                  ref={skillsContainerRef} 
+                  className="overflow-x-auto whitespace-nowrap py-4 hide-scrollbar"
+                >
+                  <div className="inline-flex space-x-8 px-4 md:px-0">
+                    {portfolioContent.skills.map((skill, index) => (
+                      <div
+                        key={index}
+                        className="flex flex-col items-center justify-center w-40 flex-shrink-0 p-8 bg-stone-50 rounded-lg shadow-sm border border-stone-200 hover-lift"
+                      >
+                        {skill.logoUrl ? (
+                          <img src={skill.logoUrl} alt={`${skill.name} logo`} className="w-16 h-16 object-contain mb-4 transition-all duration-500" onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/64x64/292524/f5f5f4?text=${skill.name.split(' ')[0].substring(0,3)}` }} />
+                        ) : (
+                          <div className="text-7xl mb-5 text-stone-700"></div>
+                        )}
+                        <p className="text-xl font-medium text-stone-900 text-center whitespace-normal">{skill.name}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+
+              {/* Work Experience Section - Interactive Timeline */}
+              <section id="experience" className="py-32 px-4 md:px-16 lg:px-32 bg-stone-50 mx-auto max-w-7xl animate-fadeInElegant">
+                <h2 className="text-6xl font-playfair text-center text-stone-900 mb-20 flex items-center justify-center">
+                  Professional Chapters
+                </h2>
+                <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-8">
+                  <div className="md:w-1/3 space-y-8 pr-4 relative timeline-container" ref={experienceTimelineContainerRef}>
+                    <div className="timeline-line" ref={experienceTimelineLineRef}></div>
+                    {portfolioContent.experience.map((job, index) => (
+                      <div
+                        key={index}
+                        className={`timeline-item ${activeJobIndex === index ? 'active' : ''}`}
+                        onClick={() => setActiveJobIndex(index)}
+                      >
+                        <div className="timeline-dot" style={{ backgroundColor: job.dotColor }}></div>
+                        <h3 className="text-2xl font-playfair text-stone-900 mb-1">{job.title}</h3>
+                        <p className="text-lg text-stone-700 font-medium">{job.company}</p>
+                        <p className="text-sm text-stone-600">{job.duration}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="md:w-2/3 pl-4">
+                    {portfolioContent.experience.map((job, index) => (
+                      <div
+                        key={index}
+                        className={`bg-stone-100 p-8 rounded-lg shadow-lg transition-all duration-500 ease-in-out ${activeJobIndex === index ? 'timeline-details open' : 'timeline-details'}`}
+                        style={{ borderLeft: activeJobIndex === index ? `8px solid ${job.dotColor}` : '8px solid #d1d5db' }}
+                      >
+                        <h3 className="text-3xl font-playfair text-stone-900 mb-3">{job.title}</h3>
+                        <p className="text-xl text-stone-700 font-medium mb-2">{job.company} | {job.location}</p>
+                        <p className="text-lg text-stone-600 mb-6">{job.duration}</p>
+                        <ul className="list-disc list-inside text-stone-700 space-y-4 pl-6">
+                          {job.description.map((point, i) => (
+                            <li key={i} className="font-light leading-relaxed">{point}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+
+              {/* Projects Section */}
+              <section id="projects" className="py-32 px-4 md:px-16 lg:px-32 bg-stone-50 mx-auto max-w-7xl animate-fadeInElegant">
+                <h2 className="text-6xl font-playfair text-center text-stone-900 mb-20 flex items-center justify-center">
+                  Curated Works
+                </h2>
+                <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-24 gap-x-12 auto-rows-fr">
+                  {orderedProjects.map((project, index) => (
+                    <div
+                      key={index}
+                      className={`polaroid-card group hover-lift animate-slideInUpSophisticated ${
+                        index % 4 === 0 ? 'rotate-small-1' :
+                        index % 4 === 1 ? 'rotate-small-neg-1' :
+                        index % 4 === 2 ? 'rotate-small-2' :
+                        'rotate-small-neg-2'
+                      }`}
+                      style={{ animationDelay: `${0.2 * index}s` }}
+                    >
+                      {project.externalVideoLink ? (
+                        <div className="polaroid-image-wrapper relative">
+                          <iframe
+                            src={`https://www.youtube.com/embed/${getYouTubeVideoId(project.externalVideoLink)}`}
+                            title={`${project.title} Video`}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            className="absolute top-0 left-0 w-full h-full object-cover"
+                          ></iframe>
+                        </div>
+                      ) : project.externalLink ? (
+                        <a href={project.externalLink} target="_blank" rel="noopener noreferrer" className="block polaroid-image-wrapper relative">
+                          <img
+                            src={project.image}
+                            alt={`${project.title} Thumbnail`}
+                            className="project-image"
+                            onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/600x400/292524/f5f5f4?text=${project.title.replace(/\s/g, '+')}%20Link` }}
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <ArrowRightIcon className="w-20 h-20 text-white" strokeWidth={1.5} />
+                          </div>
+                        </a>
+                      ) : (
+                        <div className="polaroid-image-wrapper">
+                          <img
+                            src={project.image}
+                            alt={project.title}
+                            className="project-image"
+                            onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/600x400/292524/f5f5f4?text=${project.title.replace(/\s/g, '+')}` }}
+                          />
+                        </div>
+                      )}
+                      <div className="polaroid-text-content">
+                        <h3 className="font-playfair text-stone-900">{project.title}</h3>
+                        <p className="text-stone-700 font-light" dangerouslySetInnerHTML={{ __html: project.description.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }}></p>
+                        {project.apkDownloadLink && (
+                          <div className="mt-4">
+                            <a
+                              href={project.apkDownloadLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center justify-center px-4 py-2 bg-stone-700 text-stone-50 font-semibold rounded-full shadow-md hover:bg-stone-800 transition-colors duration-300 text-sm"
+                            >
+                              <DownloadIcon className="mr-2 h-4 w-4" /> Download APK
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* Contact Section */}
+              <section id="contact" className="py-32 px-4 md:px-16 lg:px-32 bg-stone-100 mx-auto max-w-7xl animate-fadeInElegant">
+                <h2 className="text-6xl font-playfair text-center text-stone-900 mb-20 flex items-center justify-center">
+                  Let's Connect
+                </h2>
+                <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+                  {/* Contact Form */}
+                  <div className="bg-white p-8 rounded-lg shadow-lg border border-stone-200">
+                    <h3 className="text-3xl font-playfair text-stone-900 mb-6">Send a Message</h3>
+                    <form className="space-y-6" onSubmit={handleSubmit}> {/* Added onSubmit handler */}
+                      <div>
+                        <label htmlFor="name" className="block text-lg font-medium text-stone-700 mb-2">Name</label>
+                        <input
+                          type="text"
+                          id="name"
+                          name="name" // Added name attribute for Formspree
+                          className="w-full px-4 py-3 border border-stone-300 rounded-md focus:ring-2 focus:ring-stone-500 focus:border-transparent transition-all duration-200"
+                          placeholder="Your Name"
+                          required // Added required attribute
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="email" className="block text-lg font-medium text-stone-700 mb-2">Email</label>
+                        <input
+                          type="email"
+                          id="email"
+                          name="_replyto" // Changed name to _replyto for Formspree to set reply-to header
+                          className="w-full px-4 py-3 border border-stone-300 rounded-md focus:ring-2 focus:ring-stone-500 focus:border-transparent transition-all duration-200"
+                          placeholder="your.email@example.com"
+                          required // Added required attribute
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="subject" className="block text-lg font-medium text-stone-700 mb-2">Subject</label>
+                        <input
+                          type="text"
+                          id="subject"
+                          name="_subject" // Changed name to _subject for Formspree to set email subject
+                          className="w-full px-4 py-3 border border-stone-300 rounded-md focus:ring-2 focus:ring-stone-500 focus:border-transparent transition-all duration-200"
+                          placeholder="Subject of your message"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="message" className="block text-lg font-medium text-stone-700 mb-2">Message</label>
+                        <textarea
+                          id="message"
+                          name="message" // Added name attribute for Formspree
+                          rows="5"
+                          className="w-full px-4 py-3 border border-stone-300 rounded-md focus:ring-2 focus:ring-stone-500 focus:border-transparent transition-all duration-200 resize-y"
+                          placeholder="Your message..."
+                          required // Added required attribute
+                        ></textarea>
+                      </div>
+                      <button
+                        type="submit"
+                        className="w-full inline-flex items-center justify-center px-6 py-3 bg-stone-700 text-stone-50 font-semibold rounded-md shadow-md hover:bg-stone-800 transition-colors duration-300 text-lg"
+                      >
+                        Send Message
+                      </button>
+                      {formStatus && ( // Display form status message
+                        <p className={`mt-4 text-center text-sm ${formStatus.includes('success') ? 'text-green-600' : 'text-red-600'} animate-fadeInElegant`}>
+                            {formStatus}
+                        </p>
+                      )}
+                    </form>
+                  </div>
+
+                  {/* Contact Info & Social Links */}
+                  <div className="bg-stone-50 p-8 rounded-lg shadow-lg border border-stone-200 flex flex-col">
+                    <div className="mb-12">
+                      <h3 className="text-3xl font-playfair text-stone-900 mb-4">Reach Out Directly</h3>
+                      <p className="text-lg text-stone-700 mb-6">
+                        Feel free to connect with me via email for any inquiries or collaborations.
+                      </p>
+                      <div className="flex items-center text-stone-700">
+                        <MailIcon className="w-8 h-8 mr-4 text-stone-600" strokeWidth={1.5} />
+                        {showEmailInContact ? (
+                          <span className="text-lg font-semibold text-stone-800 flex items-center">
+                            {portfolioContent.contact.email}
+                            <button
+                              onClick={copyEmailToClipboard}
+                              className="ml-2 p-1 rounded-full bg-stone-200 hover:bg-stone-300 transition-colors duration-200"
+                              title="Copy email to clipboard"
+                            >
+                              <CopyIcon className="w-5 h-5 text-stone-600" />
+                            </button>
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => setShowEmailInContact(true)}
+                            className="px-4 py-2 bg-stone-700 text-stone-50 font-semibold rounded-md shadow-md hover:bg-stone-800 transition-colors duration-300 text-lg"
+                          >
+                            Press to reveal email
+                          </button>
+                        )}
+                      </div>
+                      {copyMessage && (
+                        <p className="mt-2 text-sm text-stone-600 animate-fadeInElegant">{copyMessage}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <h3 className="text-3xl font-playfair text-stone-900 mb-4">Find Me Online</h3>
+                      <p className="text-lg text-stone-700 mb-6">
+                        Explore my professional network and creative works on these platforms.
+                      </p>
+                      <div className="flex justify-center md:justify-start space-x-8">
+                        <a
+                          href={portfolioContent.contact.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-stone-700 hover:text-stone-900 transition-colors duration-300 transform hover:scale-110"
+                        >
+                          <LinkedinIcon className="w-12 h-12" strokeWidth={1.5} />
+                        </a>
+                        {/* Add other social links here, e.g., Github, Behance */}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Footer */}
+              <footer className="py-12 px-4 md:px-16 lg:px-32 bg-stone-900 text-stone-50 text-center rounded-t-xl mt-12">
+                <p>&copy; {new Date().getFullYear()} {portfolioContent.name}. All rights reserved.</p>
+                <p className="text-sm text-stone-400 mt-4 font-light">Artistry in Every Detail. Crafted with Distinction.</p>
+              </footer>
+            </div>
+          );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
