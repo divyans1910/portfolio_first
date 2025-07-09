@@ -206,14 +206,34 @@
 
         /* Mobile Menu Specific Styles */
         .mobile-menu-overlay {
-            transition: opacity 0.3s ease-in-out;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5); /* Direct background for overlay */
+            z-index: 100;
+            display: flex;
+            justify-content: flex-end;
+            opacity: 0; /* Start hidden */
+            visibility: hidden; /* Hide from screen readers/interactions when closed */
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .mobile-menu-overlay.open {
+            opacity: 1; /* Fully visible */
+            visibility: visible; /* Make visible */
         }
         .mobile-menu-sidebar {
-            transform: translateX(100%);
+            transform: translateX(100%); /* Start off-screen */
             transition: transform 0.3s ease-in-out;
+            background-color: white; /* Ensure background is white */
+            width: 75%; /* Responsive width */
+            max-width: 320px; /* Max width for larger phones */
+            height: 100%;
+            padding: 2rem; /* Adjusted padding */
+            box-shadow: -4px 0 10px rgba(0,0,0,0.1); /* Shadow for depth */
+            display: flex;
+            flex-direction: column;
         }
         .mobile-menu-sidebar.open {
-            transform: translateX(0);
+            transform: translateX(0); /* Slide into view */
         }
     </style>
 </head>
@@ -592,8 +612,8 @@
 
               {/* Mobile Menu Overlay */}
               {isMobileMenuOpen && (
-                <div className="mobile-menu-overlay fixed inset-0 bg-black bg-opacity-50 z-[100] flex justify-end">
-                  <div className="mobile-menu-sidebar bg-white w-3/4 max-w-xs h-full p-8 shadow-lg flex flex-col">
+                <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'open' : ''}`}>
+                  <div className={`mobile-menu-sidebar bg-white w-3/4 max-w-xs h-full p-8 shadow-lg flex flex-col ${isMobileMenuOpen ? 'open' : ''}`}>
                     <div className="flex justify-end mb-8">
                       <XIcon className="w-8 h-8 text-stone-700 cursor-pointer" onClick={() => setIsMobileMenuOpen(false)} />
                     </div>
